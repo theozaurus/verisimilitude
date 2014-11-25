@@ -8,12 +8,16 @@ module Verisimilitude
   class App < Sinatra::Base
     include Sinatra::SSE
 
-    get '/distribution' do
+    get '/sse/distributions' do
       sse_stream do |out|
         EM.add_periodic_timer(1) do
           out.push :event => "distribution", :data => distribution_serializer.to_json(distributions)
         end
       end
+    end
+
+    get '/distributions' do
+      distribution_serializer.to_json(distributions)
     end
 
     private
