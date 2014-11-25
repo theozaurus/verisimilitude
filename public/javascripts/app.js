@@ -6,7 +6,7 @@ var Verisimilitude = (function(){
 
     var force = d3.layout.force()
         .charge(-500)
-        .linkDistance(300)
+        .linkDistance(100)
         .size([width, height]);
 
     this.update = function(graph){
@@ -21,7 +21,9 @@ var Verisimilitude = (function(){
         .append("line");
       link
         .attr("class", "link")
+        .style("stroke", "black")
         .style("stroke-width", function(d) { return Math.sqrt(d.value); });
+      link.exit().remove();
 
       var circles = d3.select(selector).selectAll('circle').data(graph.nodes);
       circles
@@ -103,13 +105,20 @@ var Linker = (function(){
       hash.nodes = data;
       hash.links = [];
 
-      var link_num = Math.round(Math.random() * 50);
-      for (i = 0; i < link_num; i++) {
-        hash.links = hash.links.concat({
-          source: Math.floor(Math.random() * data.length),
-          target: Math.floor(Math.random() * data.length),
-          value:  Math.floor(Math.random() * 3)
-        });
+      for (i = 0; i < hash.nodes.length; i++) {
+        var thisElement = hash.nodes[i];
+
+        var findSimilar = function(element, j){
+          if (thisElement.running == element.running && thisElement.booting == element.booting) {
+            hash.links = hash.links.concat({
+              source: i,
+              target: j,
+              value:  1
+            });
+          }
+        };
+
+        _.each(hash.nodes, findSimilar);
       }
 
       return hash;
@@ -120,14 +129,16 @@ var Linker = (function(){
 
 var Poller = (function(){
   return function(url, func){
+    timeout = 0;
     var run = function(){
-      window.setTimeout(runFunc, 2000);
+      window.setTimeout(runFunc, timeout);
     };
 
     var runFunc = function(){
       getData(function(data){
         func(data);
         run();
+        timeout = 10000;
       });
     };
 
