@@ -1,17 +1,13 @@
 var Verisimilitude = (function(){
 
   return function(selector){
-
-    var initialize = function(){
-    };
-
     this.update = function(data){
-      console.log(data[0].running);
-      var p = d3.select(selector).selectAll('circle')
-        .data(data)
-      .enter();
+      console.log("Running: " + data[0].running);
 
-      p.append('circle')
+      var circles = d3.select(selector).selectAll('circle').data(data);
+      circles.enter().append('circle');
+
+      circles
         .attr('r', '100px')
         .attr('cx', '150px')
         .attr('cy', '150px')
@@ -19,24 +15,44 @@ var Verisimilitude = (function(){
         .style('stroke-width', '1px')
         .style("fill","white");
 
-      p.append('text')
-        .text(function(d){ return d.name; })
+      circles.exit().remove();
+
+      var name = d3.select(selector).selectAll('text.name').data(data);
+      name
+        .enter().append('text');
+
+      name.text(function(d){ return d.name; })
+        .attr('class', 'name')
+        .attr('x', '150px')
+        .attr('y', '130px');
+
+      name
+        .exit().remove();
+
+      var running = d3.select(selector).selectAll('text.running').data(data);
+      running
+        .enter().append('text');
+
+      running.text(function(d){ return "Running: " + d.running; })
+        .attr('class', 'running')
         .attr('x', '150px')
         .attr('y', '150px');
 
-      p.append('text')
-        .text(function(d){ return d.running; })
+      running
+        .exit().remove();
+
+      var booting = d3.select(selector).selectAll('text.booting').data(data);
+      booting
+        .enter().append('text');
+
+      booting.text(function(d){ return "Booting: " + d.booting; })
+        .attr('class', 'booting')
         .attr('x', '150px')
         .attr('y', '170px');
 
-      p.append('text')
-        .text(function(d){ return d.booting; })
-        .attr('x', '150px')
-        .attr('y', '190px');
-
+      booting
+        .exit().remove();
     };
-
-    initialize();
   };
 
 }());
