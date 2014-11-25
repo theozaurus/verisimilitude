@@ -6,7 +6,14 @@ require 'verisimilitude/distributions_serializer'
 
 module Verisimilitude
   class App < Sinatra::Base
+
+    set :public_folder, 'public'
+
     include Sinatra::SSE
+
+    get '/' do
+      send_file File.join(settings.public_folder, 'index.html')
+    end
 
     get '/sse/distributions' do
       sse_stream do |out|
