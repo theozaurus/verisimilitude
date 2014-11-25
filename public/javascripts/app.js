@@ -2,8 +2,6 @@ var Verisimilitude = (function(){
 
   return function(selector){
     this.update = function(data){
-      console.log("Running: " + data[0].running);
-
       var circles = d3.select(selector).selectAll('circle').data(data);
       circles.enter().append('circle');
 
@@ -65,7 +63,12 @@ var Poller = (function(){
 
     var runFunc = function(){
       getData(function(data){
-        func(data);
+        try {
+          func(data);
+        } catch(e) {
+          console.error(data);
+          console.error(e);
+        }
         run();
       });
     };
@@ -80,9 +83,6 @@ var Poller = (function(){
 
 
 document.addEventListener('DOMContentLoaded', function () {
-
-  console.log("LOADED! Let's get weird")
-
   var chart = new Verisimilitude('.visuals');
   var poller = new Poller('/distributions', function(data){ chart.update(data); });
   poller.run();
