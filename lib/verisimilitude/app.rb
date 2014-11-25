@@ -2,6 +2,7 @@ require 'sinatra'
 require "sinatra/sse"
 
 require 'verisimilitude/distribution_service'
+require 'verisimilitude/distribution_service'
 require 'verisimilitude/distributions_serializer'
 
 module Verisimilitude
@@ -34,7 +35,9 @@ module Verisimilitude
     end
 
     def distribution_service
-      @distribution_service ||= DistributionService.new(etcd_cluster_endpoints: ['http://192.168.11.11:4001'])
+      # @distribution_service ||= DistributionService.new(etcd_cluster_endpoints: ['http://192.168.11.11:4001'])
+      require 'verisimilitude/distribution_service_fake'
+      @distribution_service ||= DistributionServiceFake.new
     end
 
     def distribution_serializer
