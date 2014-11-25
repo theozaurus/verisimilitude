@@ -4,7 +4,7 @@ module Verisimilitude
   class DistributionServiceFake
 
     def fetch
-      names(rand(3)).map { |n| Distribution.new(name: n, booting: booting, running: running) }
+      names(rand(3)+1).map { |n| Distribution.new(name: n, booting: booting, running: running) }
     end
 
     private
